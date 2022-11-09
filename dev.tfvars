@@ -1,17 +1,18 @@
 project = "cloudplex"
+prefix = "MzcDevCpp-"
 codestar_connections_arn = ""
+aws_codebuild_source_credential_bitbucket_token = ""
 
 pipeline = {
     MzcSpace = {
         #codepipeline option
         CodePipeline = {
-            name = "space-rest-api",
-            source = "Bitbucket",
+            Name = "space-rest-api",
             FullRepositoryId = "megazone/mzc-space",
-            domain_name = "space",
-            app_name = "space-rest-api",
-            branch = "main",
+            BranchName = "main",
 
+            #not use below variable
+            source = "Bitbucket",
             config_path = "mzc-space/rest-api"
         },
         #codebuild option
@@ -34,13 +35,12 @@ pipeline = {
     MzcProduct = {
         #codepipeline option
         CodePipeline = {
-            name = "product-rest-api",
-            source = "Bitbucket",
+            Name = "product-rest-api",
             FullRepositoryId = "megazone/mzc-product",
-            domain_name = "product",
-            app_name = "product-rest-api",
-            branch = "main",
+            BranchName = "main",
 
+            #not use below variable
+            source = "Bitbucket",
             config_path = "mzc-product"
         },
         #codebuild option
@@ -63,13 +63,12 @@ pipeline = {
     MzcUser = {
         #codepipeline option
         CodePipeline = {
-            name = "user-rest-api",
-            source = "Bitbucket",
+            Name = "user-rest-api",
             FullRepositoryId = "megazone/mzc-user",
-            domain_name = "user",
-            app_name = "user-rest-api",
-            branch = "main",
+            BranchName = "main",
 
+            #not use below variable
+            source = "Bitbucket",
             config_path = "mzc-user"
         },
         #codebuild option

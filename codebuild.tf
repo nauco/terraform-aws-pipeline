@@ -1,5 +1,5 @@
 resource "aws_iam_role" "codebuild_role" {
-  name = "codebuild_role"
+  name = format("%s%s", var.prefix, "codebuild-role")
 
   assume_role_policy = <<EOF
 {
@@ -80,8 +80,8 @@ POLICY
 resource "aws_codebuild_project" "codebuild" {
   for_each = var.pipeline
 
-  name          = each.value.CodePipeline.name
-  description   = format("%s%s",each.value.CodePipeline.name,"_codebuild_project")
+  name          = each.value.CodePipeline.Name
+  description   = format("%s%s",each.value.CodePipeline.Name,"_codebuild_project")
   build_timeout = "60"
   service_role  = aws_iam_role.codebuild_role.arn
 
@@ -104,7 +104,6 @@ resource "aws_codebuild_project" "codebuild" {
 
     dynamic "environment_variable" {
       
-      #for_each = var.pipeline.MzcSpace.CodeBuild.environment_variables
       for_each = each.value.CodeBuild.environment_variables
       content {
         name = environment_variable.key
@@ -146,23 +145,6 @@ resource "aws_codebuild_project" "codebuild" {
     source_identifier = "root"
     source_version = "main"
   }
-  
-
-  # source_version = "master"
-
-  # vpc_config {
-  #   vpc_id = aws_vpc.example.id
-
-  #   subnets = [
-  #     aws_subnet.example1.id,
-  #     aws_subnet.example2.id,
-  #   ]
-
-  #   security_group_ids = [
-  #     aws_security_group.example1.id,
-  #     aws_security_group.example2.id,
-  #   ]
-  # }
 
   tags = {
     Environment = "Dev"
@@ -173,6 +155,6 @@ resource "aws_codebuild_project" "codebuild" {
 resource "aws_codebuild_source_credential" "bitbucket" {
   auth_type   = "BASIC_AUTH"
   server_type = "BITBUCKET"
-  token       = "secret"
+  token       = var.aws_codebuild_source_credential_bitbucket_token
   user_name   = "leehodong"
 }

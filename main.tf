@@ -1,7 +1,7 @@
 resource "aws_codepipeline" "codepipeline" {
   for_each = var.pipeline
 
-  name     = each.value.CodePipeline.name
+  name     = format("%s%s", var.prefix, each.value.CodePipeline.Name)
   role_arn = aws_iam_role.codepipeline_role.arn
 
   artifact_store {
@@ -23,7 +23,7 @@ resource "aws_codepipeline" "codepipeline" {
       configuration = {
         ConnectionArn    = var.codestar_connections_arn
         FullRepositoryId = each.value.CodePipeline.FullRepositoryId
-        BranchName       = each.value.CodePipeline.branch
+        BranchName       = each.value.CodePipeline.BranchName
       }
     }   
   }
@@ -57,7 +57,7 @@ resource "aws_s3_bucket_acl" "codepipeline_bucket_acl" {
 }
 
 resource "aws_iam_role" "codepipeline_role" {
-  name = "test-role"
+  name = format("%s%s", var.prefix, "codepipeline-role")
 
   assume_role_policy = <<EOF
 {
@@ -76,7 +76,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "codepipeline_policy" {
-  name = "codepipeline_policy"
+  name = format("%s%s", var.prefix, "codepipeline-policy")
   role = aws_iam_role.codepipeline_role.id
 
   policy = <<EOF
