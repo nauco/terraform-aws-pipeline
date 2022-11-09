@@ -1,7 +1,7 @@
 project = "cloudplex"
 prefix = "MzcDevCpp-"
-codestar_connections_arn = ""
-aws_codebuild_source_credential_bitbucket_token = ""
+codestar_connections_arn = "arn:aws:codestar-connections:ap-northeast-2:179248873946:connection/a0807f60-eb1c-4f6a-aea6-c9b85977769b"
+aws_codebuild_source_credential_bitbucket_token = "5dRjPC36dpubwrZWMRxB"
 
 pipeline = {
     MzcSpace = {
