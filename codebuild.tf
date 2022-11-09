@@ -1,5 +1,5 @@
-resource "aws_iam_role" "example" {
-  name = "example"
+resource "aws_iam_role" "codebuild_role" {
+  name = "codebuild_role"
 
   assume_role_policy = <<EOF
 {
@@ -17,8 +17,8 @@ resource "aws_iam_role" "example" {
 EOF
 }
 
-resource "aws_iam_role_policy" "example" {
-  role = aws_iam_role.example.name
+resource "aws_iam_role_policy" "role_policy" {
+  role = aws_iam_role.codebuild_role.name
 
   policy = <<POLICY
 {
@@ -44,7 +44,8 @@ resource "aws_iam_role_policy" "example" {
         "secretsmanager:*",
         "ecr:*",
         "codeartifact:*",
-        "sts:*"
+        "sts:*",
+        "ssm:*"
       ]
     },
     {
@@ -76,24 +77,13 @@ POLICY
 }
 
 
-locals {
-  bucket_settings = {
-    "DOMAIN_NAME"  = { val = "space", type = "PLAINTEXT" },
-    "GRADLE_ENV"   = { val = "dev", type = "PLAINTEXT" },
-    "AWS_DEFAULT_REGION"   = { val = "ap-northeast-2", type = "PLAINTEXT" },
-    "APP_NAME"   = { val = "space-rest-api", type = "PLAINTEXT" },
-    "CONTAINER_NAME"   = { val = "space-rest-api", type = "PLAINTEXT" },
-    "DOCKERHUB_USER" = { val = "mzc-cpd-codebuild-docker-hub:username", type = "SECRETS_MANAGER" },
-    "DOCKERHUB_PASS"    = { val = "mzc-cpd-codebuild-docker-hub:password", type = "SECRETS_MANAGER" },
-    "BITBUCKET_PASSWORD"    = { val = "devops-bitbucket:password", type = "SECRETS_MANAGER" }
-  }
-}
+resource "aws_codebuild_project" "codebuild" {
+  for_each = var.pipeline
 
-resource "aws_codebuild_project" "example" {
-  name          = "test-project"
-  description   = "test_codebuild_project"
-  build_timeout = "5"
-  service_role  = aws_iam_role.example.arn
+  name          = each.value.CodePipeline.name
+  description   = format("%s%s",each.value.CodePipeline.name,"_codebuild_project")
+  build_timeout = "60"
+  service_role  = aws_iam_role.codebuild_role.arn
 
   artifacts {
     type = "CODEPIPELINE"
@@ -114,7 +104,8 @@ resource "aws_codebuild_project" "example" {
 
     dynamic "environment_variable" {
       
-      for_each = local.bucket_settings
+      #for_each = var.pipeline.MzcSpace.CodeBuild.environment_variables
+      for_each = each.value.CodeBuild.environment_variables
       content {
         name = environment_variable.key
         value = environment_variable.value.val
@@ -137,7 +128,7 @@ resource "aws_codebuild_project" "example" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "apps/space-rest-api/buildspec-dev.yml"
+    buildspec = each.value.CodeBuild.buildspec
 #     buildspec = <<BUILDSPEC
 # ${file("buildspec.yaml")}
 #     BUILDSPEC
@@ -174,13 +165,14 @@ resource "aws_codebuild_project" "example" {
   # }
 
   tags = {
-    Environment = "Test"
+    Environment = "Dev"
+    Service = each.key
   }
 }
 
 resource "aws_codebuild_source_credential" "bitbucket" {
   auth_type   = "BASIC_AUTH"
   server_type = "BITBUCKET"
-  token       = "secret_token"
+  token       = "secret"
   user_name   = "leehodong"
 }

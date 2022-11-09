@@ -4,7 +4,10 @@ variable "project" {
 }
 
 variable "codestar_connections_arn" {
-  description = "project code which used to compose the resource name"
+  description = "codestar connections arn for connect bitbucket to aws"
   default     = ""
 }
 
+variable "pipeline" {
+  default = {}
+}

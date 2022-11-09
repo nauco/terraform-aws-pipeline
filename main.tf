@@ -1,5 +1,7 @@
 resource "aws_codepipeline" "codepipeline" {
-  name     = "tf-test-pipeline"
+  for_each = var.pipeline
+
+  name     = each.value.CodePipeline.name
   role_arn = aws_iam_role.codepipeline_role.arn
 
   artifact_store {
@@ -19,10 +21,9 @@ resource "aws_codepipeline" "codepipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        #ConnectionArn    = data.aws_codestarconnections_connection.example.arn
         ConnectionArn    = var.codestar_connections_arn
-        FullRepositoryId = "megazone/mzc-space"
-        BranchName       = "main"
+        FullRepositoryId = each.value.CodePipeline.FullRepositoryId
+        BranchName       = each.value.CodePipeline.branch
       }
     }   
   }
@@ -36,20 +37,15 @@ resource "aws_codepipeline" "codepipeline" {
       owner            = "AWS"
       provider         = "CodeBuild"
       input_artifacts  = ["source_output"]
-      output_artifacts = ["build_output"]
       version          = "1"
 
       configuration = {
-        ProjectName = aws_codebuild_project.example.id
+        ProjectName = aws_codebuild_project.codebuild[each.key].id
       }
     }
   }
 
 }
-
-# data "aws_codestarconnections_connection" "example" {
-#   arn = codestar_connections_arn
-# }
 
 resource "aws_s3_bucket" "codepipeline_bucket" {
   bucket = "dev-cpp-codepipeline-artifact"
