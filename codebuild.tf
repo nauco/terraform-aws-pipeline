@@ -127,7 +127,8 @@ resource "aws_codebuild_project" "codebuild" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = each.value.CodeBuild.buildspec
+    buildspec = each.value.CodeBuild.buildspec_repo ? each.value.CodeBuild.buildspec : each.value.CodeBuild.buildspec_yaml
+    # buildspec = each.value.CodeBuild.buildspec
 #     buildspec = <<BUILDSPEC
 # ${file("buildspec.yaml")}
 #     BUILDSPEC
