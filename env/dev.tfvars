@@ -27,8 +27,24 @@ pipeline = {
                 "DOCKERHUB_PASS"    = { val = "mzc-cpd-codebuild-docker-hub:password", type = "SECRETS_MANAGER" },
                 "BITBUCKET_PASSWORD"    = { val = "devops-bitbucket:password", type = "SECRETS_MANAGER" }
             }
+            
+            # true if buildspec is located in source repo 
+            buildspec_repo = false
+            buildspec_yaml = <<BUILDSPEC
+version: 0.2
 
-            buildspec = "apps/space-rest-api/buildspec-dev.yml"
+phases:
+  install:
+    runtime-versions:
+      docker: 20
+
+  build:
+    commands:
+    - echo TEST
+BUILDSPEC        
+
+            
+            # buildspec = "apps/space-rest-api/buildspec-dev.yml"
         }    
     },
 
@@ -55,7 +71,10 @@ pipeline = {
                 "DOCKERHUB_PASS"    = { val = "mzc-cpd-codebuild-docker-hub:password", type = "SECRETS_MANAGER" },
                 "BITBUCKET_PASSWORD"    = { val = "devops-bitbucket:password", type = "SECRETS_MANAGER" }
             }
-
+            
+            # true if buildspec is located in source repo 
+            buildspec_repo = true
+            buildspec_yaml = ""
             buildspec = "apps/product-rest-api/buildspec-dev.yml"
         }
     },
@@ -83,7 +102,10 @@ pipeline = {
                 "DOCKERHUB_PASS"    = { val = "mzc-cpd-codebuild-docker-hub:password", type = "SECRETS_MANAGER" },
                 "BITBUCKET_PASSWORD"    = { val = "devops-bitbucket:password", type = "SECRETS_MANAGER" }
             }
-
+            
+            # true if buildspec is located in source repo 
+            buildspec_repo = true
+            buildspec_yaml = ""
             buildspec = "apps/user-rest-api/buildspec-dev.yml"
         }
     }
