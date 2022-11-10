@@ -1,5 +1,6 @@
 project = "cloudplex"
 prefix = "MzcDevCpp-"
+approval_group_name = ""
 codestar_connections_arn = ""
 aws_codebuild_source_credential_bitbucket_token = ""
 
@@ -15,6 +16,10 @@ pipeline = {
             source = "Bitbucket",
             config_path = "mzc-space/rest-api"
         },
+        #approval option
+        Approval = {
+            build_approval = true
+        }, 
         #codebuild option
         CodeBuild = {
             environment_variables = {
@@ -59,6 +64,10 @@ BUILDSPEC
             source = "Bitbucket",
             config_path = "mzc-product"
         },
+        #approval option
+        Approval = {
+            build_approval = false
+        },         
         #codebuild option
         CodeBuild = {
             environment_variables = {
@@ -90,6 +99,10 @@ BUILDSPEC
             source = "Bitbucket",
             config_path = "mzc-user"
         },
+        #approval option
+        Approval = {
+            build_approval = false
+        },         
         #codebuild option
         CodeBuild = {
             environment_variables = {

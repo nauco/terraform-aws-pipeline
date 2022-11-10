@@ -20,3 +20,7 @@ variable "aws_codebuild_source_credential_bitbucket_token" {
 variable "pipeline" {
   default = {}
 }
+
+variable "approval_group_name" {
+  default = ""
+}
