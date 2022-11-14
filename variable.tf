@@ -3,6 +3,11 @@ variable "project" {
   default     = ""
 }
 
+variable "env" {
+  description = "env"
+  default     = "test"
+}
+
 variable "prefix" {
   description = "prefix"
   default     = "Test-"

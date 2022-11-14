@@ -1,3 +1,12 @@
+resource "aws_s3_bucket" "codepipeline_bucket" {
+  bucket = format("%s%s", var.env, "-cpp-codepipeline-artifact")
+}
+
+resource "aws_s3_bucket_acl" "codepipeline_bucket_acl" {
+  bucket = aws_s3_bucket.codepipeline_bucket.id
+  acl    = "private"
+}
+
 resource "aws_codepipeline" "codepipeline" {
   for_each = var.pipeline
 
@@ -42,7 +51,7 @@ resource "aws_codepipeline" "codepipeline" {
         provider         = "Manual"
       }
     }
-  }
+  }  
 
   stage {
     name = "Build"
@@ -61,15 +70,6 @@ resource "aws_codepipeline" "codepipeline" {
     }
   }
 
-}
-
-resource "aws_s3_bucket" "codepipeline_bucket" {
-  bucket = "dev-cpp-codepipeline-artifact"
-}
-
-resource "aws_s3_bucket_acl" "codepipeline_bucket_acl" {
-  bucket = aws_s3_bucket.codepipeline_bucket.id
-  acl    = "private"
 }
 
 resource "aws_iam_role" "codepipeline_role" {

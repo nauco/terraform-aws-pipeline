@@ -1,4 +1,5 @@
 project = "cloudplex"
+env = "dev"
 prefix = "MzcDevCpp-"
 approval_group_name = ""
 codestar_connections_arn = ""
@@ -18,7 +19,7 @@ pipeline = {
         },
         #approval option
         Approval = {
-            build_approval = true
+            build_approval = false
         }, 
         #codebuild option
         CodeBuild = {
@@ -33,23 +34,19 @@ pipeline = {
                 "BITBUCKET_PASSWORD"    = { val = "devops-bitbucket:password", type = "SECRETS_MANAGER" }
             }
             
-            # true if buildspec is located in source repo 
-            buildspec_repo = false
-            buildspec_yaml = <<BUILDSPEC
-version: 0.2
-
-phases:
-  install:
-    runtime-versions:
-      docker: 20
-
-  build:
-    commands:
-    - echo TEST
-BUILDSPEC        
-
-            
-            # buildspec = "apps/space-rest-api/buildspec-dev.yml"
+            # true if useBuildspecPath is located in source repo 
+            useBuildspecPath = true
+#             buildspec_yaml = <<BUILDSPEC
+# version: 0.2
+# phases:
+#   install:
+#     runtime-versions:
+#       docker: 20
+#   build:
+#     commands:
+#     - echo TEST
+# BUILDSPEC                    
+            buildspec_path = "apps/space-rest-api/buildspec-dev.yml"
         }    
     },
 
@@ -81,10 +78,10 @@ BUILDSPEC
                 "BITBUCKET_PASSWORD"    = { val = "devops-bitbucket:password", type = "SECRETS_MANAGER" }
             }
             
-            # true if buildspec is located in source repo 
-            buildspec_repo = true
+            # true if useBuildspecPath is located in source repo 
+            useBuildspecPath = true
             buildspec_yaml = ""
-            buildspec = "apps/product-rest-api/buildspec-dev.yml"
+            buildspec_path = "apps/product-rest-api/buildspec-dev.yml"
         }
     },
 
@@ -116,10 +113,10 @@ BUILDSPEC
                 "BITBUCKET_PASSWORD"    = { val = "devops-bitbucket:password", type = "SECRETS_MANAGER" }
             }
             
-            # true if buildspec is located in source repo 
-            buildspec_repo = true
+            # true if useBuildspecPath is located in source repo 
+            useBuildspecPath = true
             buildspec_yaml = ""
-            buildspec = "apps/user-rest-api/buildspec-dev.yml"
+            buildspec_path = "apps/user-rest-api/buildspec-dev.yml"
         }
     }
 }
