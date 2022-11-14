@@ -4,6 +4,7 @@ prefix = "MzcDevCpp-"
 approval_group_name = ""
 codestar_connections_arn = ""
 aws_codebuild_source_credential_bitbucket_token = ""
+codepipeline_bucket_name = ""
 
 pipeline = {
     MzcSpace = {
