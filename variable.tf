@@ -15,7 +15,7 @@ variable "prefix" {
 
 variable "codepipeline_bucket_name" {
   description = "s3 bucket name for codepipeline artifact"
-  default     = format("%s%s", var.env, "-codepipeline-artifact")
+  default     = "test-codepipeline-artifact"
 }
 
 variable "codestar_connections_arn" {

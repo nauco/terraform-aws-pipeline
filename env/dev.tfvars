@@ -36,17 +36,8 @@ pipeline = {
             }
             
             # true if useBuildspecPath is located in source repo 
-            useBuildspecPath = true
-#             buildspec_yaml = <<BUILDSPEC
-# version: 0.2
-# phases:
-#   install:
-#     runtime-versions:
-#       docker: 20
-#   build:
-#     commands:
-#     - echo TEST
-# BUILDSPEC                    
+            useBuildspecPath = false
+            buildspec_yaml = "buildspec.yaml"
             buildspec_path = "apps/space-rest-api/buildspec-dev.yml"
         }    
     },

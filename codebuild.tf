@@ -127,7 +127,7 @@ resource "aws_codebuild_project" "codebuild" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = each.value.CodeBuild.useBuildspecPath ? each.value.CodeBuild.buildspec_path : each.value.CodeBuild.buildspec_yaml
+    buildspec = each.value.CodeBuild.useBuildspecPath ? each.value.CodeBuild.buildspec_path : file("${path.module}/${each.value.CodeBuild.buildspec_yaml}")
   }
 
   secondary_sources {
