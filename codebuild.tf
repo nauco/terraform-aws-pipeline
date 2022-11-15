@@ -85,9 +85,12 @@ resource "aws_codebuild_project" "codebuild" {
   build_timeout = "60"
   service_role  = aws_iam_role.codebuild_role.arn
 
-  artifacts {
-    type = "CODEPIPELINE"
-    path = "codebuild-artifacts"
+  dynamic "artifacts" {
+    for_each = length(each.value.CodeBuild.artifacts) > 0 ? [each.value.CodeBuild.artifacts] : []
+    content {
+      type = artifacts.value.type
+      path = artifacts.value.path
+    }
   }
 
   cache {
@@ -130,19 +133,23 @@ resource "aws_codebuild_project" "codebuild" {
     buildspec = each.value.CodeBuild.useBuildspecPath ? each.value.CodeBuild.buildspec_path : file("${path.module}/${each.value.CodeBuild.buildspec_yaml}")
   }
 
-  secondary_sources {
-    type = "BITBUCKET"
-    source_identifier = "root"
-    location = "https://leehodong@bitbucket.org/megazone/mzc-kraken"
-    git_clone_depth = "1"
-
+  dynamic "secondary_sources" {
+    for_each = length(each.value.CodeBuild.secondary_sources) > 0 ? [each.value.CodeBuild.secondary_sources] : []
+    content {
+      type = secondary_sources.value.type
+      source_identifier = secondary_sources.value.source_identifier
+      location = secondary_sources.value.location
+      git_clone_depth = secondary_sources.value.git_clone_depth
+    }
   }
 
-  secondary_source_version {
-    source_identifier = "root"
-    source_version = "main"
+  dynamic "secondary_source_version" {
+    for_each = length(each.value.CodeBuild.secondary_source_version) > 0 ? [each.value.CodeBuild.secondary_source_version] : []
+    content {
+      source_identifier = secondary_source_version.value.source_identifier
+      source_version = secondary_source_version.value.source_version
+    }
   }
-
   tags = {
     Environment = "Dev"
     Service = each.key

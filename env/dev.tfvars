@@ -24,6 +24,10 @@ pipeline = {
         }, 
         #codebuild option
         CodeBuild = {
+            artifacts = {
+                type = "CODEPIPELINE"
+                path = "codebuild-artifacts"
+            }
             environment_variables = {
                 "DOMAIN_NAME"  = { val = "space", type = "PLAINTEXT" },
                 "GRADLE_ENV"   = { val = "dev", type = "PLAINTEXT" },
@@ -33,6 +37,18 @@ pipeline = {
                 "DOCKERHUB_USER" = { val = "mzc-cpd-codebuild-docker-hub:username", type = "SECRETS_MANAGER" },
                 "DOCKERHUB_PASS"    = { val = "mzc-cpd-codebuild-docker-hub:password", type = "SECRETS_MANAGER" },
                 "BITBUCKET_PASSWORD"    = { val = "devops-bitbucket:password", type = "SECRETS_MANAGER" }
+            }
+
+            secondary_sources = {
+                type = "BITBUCKET"
+                source_identifier = "root"
+                location = "https://leehodong@bitbucket.org/megazone/mzc-kraken"
+                git_clone_depth = "1"
+            }
+
+            secondary_source_version = {
+                source_identifier = "root"
+                source_version = "main"
             }
             
             # true if useBuildspecPath is located in source repo 
@@ -94,6 +110,10 @@ pipeline = {
         },         
         #codebuild option
         CodeBuild = {
+            artifacts = {
+                type = "CODEPIPELINE"
+                path = "codebuild-artifacts"
+            }
             environment_variables = {
                 "DOMAIN_NAME"  = { val = "user", type = "PLAINTEXT" },
                 "GRADLE_ENV"   = { val = "dev", type = "PLAINTEXT" },
@@ -103,6 +123,12 @@ pipeline = {
                 "DOCKERHUB_USER" = { val = "mzc-cpd-codebuild-docker-hub:username", type = "SECRETS_MANAGER" },
                 "DOCKERHUB_PASS"    = { val = "mzc-cpd-codebuild-docker-hub:password", type = "SECRETS_MANAGER" },
                 "BITBUCKET_PASSWORD"    = { val = "devops-bitbucket:password", type = "SECRETS_MANAGER" }
+            }
+
+            secondary_sources = {
+            }
+
+            secondary_source_version = {
             }
             
             # true if useBuildspecPath is located in source repo 
