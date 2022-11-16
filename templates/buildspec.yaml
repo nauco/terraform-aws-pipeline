@@ -1,0 +1,11 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 20
+
+  build:
+    commands:
+      - echo TEST...
+      - echo SUCCESS...

@@ -1,5 +1,5 @@
 resource "aws_iam_role" "codebuild_role" {
-  name = format("%s%s", var.prefix, "codebuild-role")
+  name = format("%scodebuild-role-%s", var.prefix, random_string.random.result)
 
   assume_role_policy = <<EOF
 {
@@ -87,27 +87,32 @@ resource "aws_codebuild_project" "codebuild" {
 
   dynamic "artifacts" {
     for_each = length(each.value.CodeBuild.artifacts) > 0 ? [each.value.CodeBuild.artifacts] : []
+    
     content {
       type = artifacts.value.type
       path = artifacts.value.path
     }
   }
 
-  cache {
-    type  = "LOCAL"
-    modes = ["LOCAL_DOCKER_LAYER_CACHE", "LOCAL_SOURCE_CACHE"]
-  }
+  dynamic "cache" {
+    for_each = length(each.value.CodeBuild.cache) > 0 ? [each.value.CodeBuild.cache] : []
+    
+    content {
+      type = cache.value.type
+      modes = cache.value.modes
+    }
+  }  
 
   environment {
-    compute_type                = "BUILD_GENERAL1_LARGE"
-    image                       = "aws/codebuild/amazonlinux2-x86_64-standard:4.0"
-    type                        = "LINUX_CONTAINER"
-    image_pull_credentials_type = "CODEBUILD"
-    privileged_mode             = true
-
+    compute_type                = each.value.CodeBuild.environment.compute_type
+    image                       = each.value.CodeBuild.environment.image
+    type                        = each.value.CodeBuild.environment.type
+    image_pull_credentials_type = each.value.CodeBuild.environment.image_pull_credentials_type
+    privileged_mode             = each.value.CodeBuild.environment.privileged_mode
+    
     dynamic "environment_variable" {
-      
       for_each = each.value.CodeBuild.environment_variables
+      
       content {
         name = environment_variable.key
         value = environment_variable.value.val
@@ -150,6 +155,7 @@ resource "aws_codebuild_project" "codebuild" {
       source_version = secondary_source_version.value.source_version
     }
   }
+  
   tags = {
     Environment = "Dev"
     Service = each.key

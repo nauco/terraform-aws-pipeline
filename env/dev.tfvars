@@ -28,6 +28,20 @@ pipeline = {
                 type = "CODEPIPELINE"
                 path = "codebuild-artifacts"
             }
+
+            cache = {
+                type = "LOCAL"
+                modes = ["LOCAL_DOCKER_LAYER_CACHE", "LOCAL_SOURCE_CACHE"]
+            }
+
+            environment = {
+                compute_type                = "BUILD_GENERAL1_LARGE"
+                image                       = "aws/codebuild/amazonlinux2-x86_64-standard:4.0"
+                type                        = "LINUX_CONTAINER"
+                image_pull_credentials_type = "CODEBUILD"
+                privileged_mode             = true
+            }            
+
             environment_variables = {
                 "DOMAIN_NAME"  = { val = "space", type = "PLAINTEXT" },
                 "GRADLE_ENV"   = { val = "dev", type = "PLAINTEXT" },
@@ -51,10 +65,10 @@ pipeline = {
                 source_version = "main"
             }
             
-            # true if useBuildspecPath is located in source repo 
+            # True if buildspec is located in source repo 
             useBuildspecPath = false
-            buildspec_yaml = "buildspec.yaml"
             buildspec_path = "apps/space-rest-api/buildspec-dev.yml"
+            buildspec_yaml = "buildspec.yaml"
         }    
     },
 
@@ -75,6 +89,19 @@ pipeline = {
         },         
         #codebuild option
         CodeBuild = {
+            cache = {
+                type = "LOCAL"
+                modes = ["LOCAL_DOCKER_LAYER_CACHE", "LOCAL_SOURCE_CACHE"]
+            }
+
+            environment = {
+                compute_type                = "BUILD_GENERAL1_LARGE"
+                image                       = "aws/codebuild/amazonlinux2-x86_64-standard:4.0"
+                type                        = "LINUX_CONTAINER"
+                image_pull_credentials_type = "CODEBUILD"
+                privileged_mode             = true
+            }  
+
             environment_variables = {
                 "DOMAIN_NAME"  = { val = "product", type = "PLAINTEXT" },
                 "GRADLE_ENV"   = { val = "dev", type = "PLAINTEXT" },
@@ -86,10 +113,10 @@ pipeline = {
                 "BITBUCKET_PASSWORD"    = { val = "devops-bitbucket:password", type = "SECRETS_MANAGER" }
             }
             
-            # true if useBuildspecPath is located in source repo 
+            # True if buildspec is located in source repo 
             useBuildspecPath = true
-            buildspec_yaml = ""
             buildspec_path = "apps/product-rest-api/buildspec-dev.yml"
+            buildspec_yaml = ""
         }
     },
 
@@ -114,6 +141,20 @@ pipeline = {
                 type = "CODEPIPELINE"
                 path = "codebuild-artifacts"
             }
+            
+            cache = {
+                type = "LOCAL"
+                modes = ["LOCAL_DOCKER_LAYER_CACHE", "LOCAL_SOURCE_CACHE"]
+            }
+
+            environment = {
+                compute_type                = "BUILD_GENERAL1_LARGE"
+                image                       = "aws/codebuild/amazonlinux2-x86_64-standard:4.0"
+                type                        = "LINUX_CONTAINER"
+                image_pull_credentials_type = "CODEBUILD"
+                privileged_mode             = true
+            }  
+
             environment_variables = {
                 "DOMAIN_NAME"  = { val = "user", type = "PLAINTEXT" },
                 "GRADLE_ENV"   = { val = "dev", type = "PLAINTEXT" },
@@ -131,10 +172,10 @@ pipeline = {
             secondary_source_version = {
             }
             
-            # true if useBuildspecPath is located in source repo 
+            # True if buildspec is located in source repo 
             useBuildspecPath = true
-            buildspec_yaml = ""
             buildspec_path = "apps/user-rest-api/buildspec-dev.yml"
+            buildspec_yaml = ""
         }
     }
 }
