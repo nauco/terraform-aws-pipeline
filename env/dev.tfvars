@@ -2,9 +2,9 @@ project = "cloudplex"
 env = "dev"
 prefix = "MzcDevCpp-"
 approval_group_name = ""
-codestar_connections_arn = ""
-aws_codebuild_source_credential_bitbucket_token = ""
-codepipeline_bucket_name = ""
+codestar_connections_arn = "arn:aws:codestar-connections:ap-northeast-2:179248873946:connection/a0807f60-eb1c-4f6a-aea6-c9b85977769b"
+aws_codebuild_source_credential_bitbucket_token = "5dRjPC36dpubwrZWMRxB"
+codepipeline_bucket_name = "dev-cpp-codepipeline-artifact"
 
 pipeline = {
     MzcSpace = {
@@ -66,9 +66,9 @@ pipeline = {
             }
             
             # True if buildspec is located in source repo 
-            useBuildspecPath = false
+            useBuildspecPath = true
             buildspec_path = "apps/space-rest-api/buildspec-dev.yml"
-            buildspec_yaml = "buildspec.yaml"
+            buildspec_yaml = "templates/buildspec.yaml"
         }    
     },
 
@@ -89,6 +89,11 @@ pipeline = {
         },         
         #codebuild option
         CodeBuild = {
+            artifacts = {
+                type = "CODEPIPELINE"
+                path = "codebuild-artifacts"
+            }
+
             cache = {
                 type = "LOCAL"
                 modes = ["LOCAL_DOCKER_LAYER_CACHE", "LOCAL_SOURCE_CACHE"]
@@ -112,11 +117,23 @@ pipeline = {
                 "DOCKERHUB_PASS"    = { val = "mzc-cpd-codebuild-docker-hub:password", type = "SECRETS_MANAGER" },
                 "BITBUCKET_PASSWORD"    = { val = "devops-bitbucket:password", type = "SECRETS_MANAGER" }
             }
+
+            secondary_sources = {
+                type = "BITBUCKET"
+                source_identifier = "root"
+                location = "https://leehodong@bitbucket.org/megazone/mzc-kraken"
+                git_clone_depth = "1"
+            }
+
+            secondary_source_version = {
+                source_identifier = "root"
+                source_version = "main"
+            }
             
             # True if buildspec is located in source repo 
             useBuildspecPath = true
             buildspec_path = "apps/product-rest-api/buildspec-dev.yml"
-            buildspec_yaml = ""
+            buildspec_yaml = "templates/buildspec.yaml"
         }
     },
 
@@ -167,15 +184,21 @@ pipeline = {
             }
 
             secondary_sources = {
+                type = "BITBUCKET"
+                source_identifier = "root"
+                location = "https://leehodong@bitbucket.org/megazone/mzc-kraken"
+                git_clone_depth = "1"
             }
 
             secondary_source_version = {
+                source_identifier = "root"
+                source_version = "main"
             }
             
             # True if buildspec is located in source repo 
             useBuildspecPath = true
             buildspec_path = "apps/user-rest-api/buildspec-dev.yml"
-            buildspec_yaml = ""
+            buildspec_yaml = "templates/buildspec.yaml"
         }
     }
 }
