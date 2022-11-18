@@ -1,3 +1,3 @@
 bucket = "dev-cloudplex-terraform"
-key    = "dev/codepipeline.tfstat"
+key    = "dev/codepipelinetest.tfstat"
 region = "ap-northeast-2"

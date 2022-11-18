@@ -10,7 +10,7 @@ resource "aws_s3_bucket_acl" "codepipeline_bucket_acl" {
 resource "aws_codepipeline" "codepipeline" {
   for_each = var.pipeline
 
-  name     = format("%s%s", var.prefix, each.value.CodePipeline.Name)
+  name     = format("%s%s", var.prefix, each.value.CodePipeline.PipelineName)
   role_arn = aws_iam_role.codepipeline_role.arn
 
   artifact_store {
@@ -19,22 +19,26 @@ resource "aws_codepipeline" "codepipeline" {
   }
 
   stage {
-    name = "Source"
+    name = each.value.CodePipeline.PipelineName
 
-    action {
-      name             = "Source"
-      category         = "Source"
-      owner            = "AWS"
-      provider         = "CodeStarSourceConnection"
-      version          = "1"
-      output_artifacts = ["source_output"]
+    dynamic "action" {
+      for_each = length(each.value.CodePipeline.Source) > 0 ? [each.value.CodePipeline.Source] : []
 
-      configuration = {
-        ConnectionArn    = var.codestar_connections_arn
-        FullRepositoryId = each.value.CodePipeline.FullRepositoryId
-        BranchName       = each.value.CodePipeline.BranchName
+      content {
+        name             = action.value.ActionName
+        category         = action.value.Category
+        owner            = action.value.Owner
+        provider         = each.value.CodePipeline[action.value.Provider].Provider
+        version          = action.value.Version
+        output_artifacts = action.value.OutputArtifact
+
+        configuration = {
+          for k, v in each.value.CodePipeline[action.value.Provider]: k => v
+          if k != "Provider"
+        }
+
       }
-    }   
+    }
   }
 
   dynamic "stage" {
@@ -163,7 +167,7 @@ resource "aws_iam_policy" "approval_policy" {
         }
     ]
 }
-EOF  
+EOF   
 }
 
 resource "aws_iam_group_policy_attachment" "approval_policy_attach" {

@@ -80,9 +80,9 @@ POLICY
 resource "aws_codebuild_project" "codebuild" {
   for_each = var.pipeline
 
-  name          = each.value.CodePipeline.Name
-  description   = format("%s%s",each.value.CodePipeline.Name,"_codebuild_project")
-  build_timeout = "60"
+  name          = each.value.CodeBuild.CodeBuildName
+  description   = each.value.CodeBuild.Description
+  build_timeout = each.value.CodeBuild.BuildTimeout
   service_role  = aws_iam_role.codebuild_role.arn
 
   dynamic "artifacts" {
