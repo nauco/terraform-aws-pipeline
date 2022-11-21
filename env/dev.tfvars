@@ -33,6 +33,11 @@ pipeline = {
                 Provider = "Bitbucket"
                 Version = "1"
                 OutputArtifact = ["source_output"]
+                
+            }
+
+            Build = {
+                OutputArtifacts = ["build_output"]
             }
 
             #AWS CodeCommit
@@ -133,7 +138,39 @@ pipeline = {
             useBuildspecPath = false
             buildspec_path = "apps/buildspec-dev.yml"
             buildspec_yaml = "templates/buildspec.yaml"
-        }    
+        },
+
+        CodeDeploy = {
+            useDeployStage = true
+            stageName = "Deploy"
+
+            Deploy = {
+                Category = "Deploy"
+                #AWS, Custom, ThirdParty
+                Owner = "AWS"
+                ActionName = "Deploy"
+                # Provider = S3, CloudFormation, CodeDeploy, ECS, AWS Elastic Beanstalk, AWS OpsWorks Stacks, AWS Service Catalog
+                # Provider 키워드와 Configuration 업데이트 필요
+
+                Provider = "S3"
+                Version = "1"
+                InputArtifacts = ["build_output"]                
+            }
+
+            CloudFormation = {
+                ActionMode     = "REPLACE_ON_FAILURE"
+                Capabilities   = "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
+                OutputFileName = "CreateStackOutput.json"
+                StackName      = "MyStack"
+                TemplatePath   = "build_output::sam-templated.yaml"
+            }
+
+            S3 = {
+                BucketName = "dev-cpp-codepipeline-artifact"
+                Extract    = "true"
+                ObjectKey  = "deploy-test"
+            }
+        }
     },
 
 

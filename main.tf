@@ -74,6 +74,7 @@ resource "aws_codepipeline" "codepipeline" {
       owner            = "AWS"
       provider         = "CodeBuild"
       input_artifacts  = ["source_output"]
+      output_artifacts = each.value.CodePipeline.Build.OutputArtifacts
       version          = "1"
 
       configuration = {
@@ -82,9 +83,34 @@ resource "aws_codepipeline" "codepipeline" {
     }
   }
 
+  dynamic "stage" {
+    for_each = each.value.CodeDeploy.useDeployStage ? [1] : []
+         
+
+    content {
+      name            = each.value.CodeDeploy.stageName
+
+
+      action {
+        name            = each.value.CodeDeploy.stageName
+        category        = each.value.CodeDeploy.Deploy.Category
+        owner           = each.value.CodeDeploy.Deploy.Owner
+        provider        = each.value.CodeDeploy.Deploy.Provider
+        input_artifacts = each.value.CodeDeploy.Deploy.InputArtifacts
+        version         = each.value.CodeDeploy.Deploy.Version
+
+        configuration = tomap(each.value.CodeDeploy.CloudFormation)
+      
+
+      }
+      
+    }    
+  }
+
   tags = each.value.CodePipeline.PipelineTags
 
 }
+
 
 resource "aws_iam_role" "codepipeline_role" {
   name = format("%scodepipeline-role-%s", var.prefix, random_string.random.result)
