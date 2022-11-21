@@ -99,7 +99,7 @@ resource "aws_codepipeline" "codepipeline" {
         input_artifacts = each.value.CodeDeploy.Deploy.InputArtifacts
         version         = each.value.CodeDeploy.Deploy.Version
 
-        configuration = tomap(each.value.CodeDeploy.CloudFormation)
+        configuration = tomap(each.value.CodeDeploy[each.value.CodeDeploy.Deploy.Provider])
       
 
       }

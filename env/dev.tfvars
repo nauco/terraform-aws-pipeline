@@ -149,9 +149,7 @@ pipeline = {
                 #AWS, Custom, ThirdParty
                 Owner = "AWS"
                 ActionName = "Deploy"
-                # Provider = S3, CloudFormation, CodeDeploy, ECS, AWS Elastic Beanstalk, AWS OpsWorks Stacks, AWS Service Catalog
-                # Provider 키워드와 Configuration 업데이트 필요
-
+                # Provider = S3, CloudFormation, CodeDeploy, CodeDeployToECS
                 Provider = "S3"
                 Version = "1"
                 InputArtifacts = ["build_output"]                
@@ -169,6 +167,22 @@ pipeline = {
                 BucketName = "dev-cpp-codepipeline-artifact"
                 Extract    = "true"
                 ObjectKey  = "deploy-test"
+            }
+
+            CodeDeploy = {
+                ApplicationName = "my-application"
+                DeploymentGroupName = "my-deployment-group"
+            }
+
+            CodeDeployToECS = {
+                AppSpecTemplateArtifact = "SourceArtifact"
+                ApplicationName         = "ecs-cd-application"
+                DeploymentGroupName = "ecs-deployment-group"
+                Image1ArtifactName = "MyImage"
+                Image1ContainerName = "IMAGE1_NAME"
+                TaskDefinitionTemplatePath = "taskdef.json"
+                AppSpecTemplatePath = "appspec.yaml"
+                TaskDefinitionTemplateArtifact = "SourceArtifact"
             }
         }
     },
