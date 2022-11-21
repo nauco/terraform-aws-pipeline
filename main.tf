@@ -1,3 +1,11 @@
+provider "aws" {
+  region  = "ap-northeast-2"
+
+  default_tags {
+    tags = var.common_tags
+  }
+}
+
 resource "aws_s3_bucket" "codepipeline_bucket" {
   bucket = var.codepipeline_bucket_name
 }
@@ -36,7 +44,7 @@ resource "aws_codepipeline" "codepipeline" {
           for k, v in each.value.CodePipeline[action.value.Provider]: k => v
           if k != "Provider"
         }
-
+        
       }
     }
   }
@@ -73,6 +81,8 @@ resource "aws_codepipeline" "codepipeline" {
       }
     }
   }
+
+  tags = each.value.CodePipeline.PipelineTags
 
 }
 

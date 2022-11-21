@@ -156,10 +156,7 @@ resource "aws_codebuild_project" "codebuild" {
     }
   }
   
-  tags = {
-    Environment = "Dev"
-    Service = each.key
-  }
+  tags = each.value.CodeBuild.CodeBuildTags
 }
 
 resource "aws_codebuild_source_credential" "bitbucket" {

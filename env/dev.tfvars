@@ -6,6 +6,15 @@ codestar_connections_arn = "arn:aws:codestar-connections:ap-northeast-2:17924887
 aws_codebuild_source_credential_bitbucket_token = "5dRjPC36dpubwrZWMRxB"
 codepipeline_bucket_name = "dev-cpp-codepipeline-artifact"
 
+common_tags = {
+  dept      = "PSA Group / DevOps SWAT Team"
+  i_service = "CloudPlex"
+  env       = "test"
+  email     = "lhdong@mz.co.kr"
+  purpose   = "Pipeline"
+  managed   = "Terraform"
+}
+
 pipeline = {
     MzcTest1 = {
         #codepipeline option
@@ -20,7 +29,7 @@ pipeline = {
                 #AWS, Custom, ThirdParty
                 Owner = "AWS"
                 ActionName = "Source"
-                #Provider = "Bitbucket", "S3", "ECR", "CodeCommit"
+                # Provider = "Bitbucket", "S3", "ECR", "CodeCommit"
                 Provider = "Bitbucket"
                 Version = "1"
                 OutputArtifact = ["source_output"]
@@ -67,6 +76,10 @@ pipeline = {
 
             #GitHub(버전 2)
 
+            PipelineTags = {
+                Pipeline = "pipeline tag"
+            }
+
         },
         #approval option
         Approval = {
@@ -110,6 +123,10 @@ pipeline = {
             secondary_source_version = {
                 source_identifier = "root"
                 source_version = "main"
+            }
+
+            CodeBuildTags = {
+                CodeBuild = "build tag"                
             }
             
             # True if buildspec is located in source repo 
