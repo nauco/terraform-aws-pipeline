@@ -2,6 +2,10 @@ module "codebuild" {
   for_each = var.pipeline
   source   = "./modules/codebuild"
 
+  prefix                  = var.prefix
+  codepipeline_bucket_arn = aws_s3_bucket.codepipeline_bucket.arn
+  codepipeline_bucket_id  = aws_s3_bucket.codepipeline_bucket.id  
+
   codebuild_info = {
     name = each.value.CodeBuild.CodeBuildName
     description = each.value.CodeBuild.Description
@@ -17,8 +21,4 @@ module "codebuild" {
     secondary_source_version = try(each.value.CodeBuild.secondary_source_version, {})
     CodeBuildTags = try(each.value.CodeBuild.CodeBuildTags, {})
   }
-  
-  codepipeline_bucket_arn = aws_s3_bucket.codepipeline_bucket.arn
-  codepipeline_bucket_id = aws_s3_bucket.codepipeline_bucket.id
-
 }

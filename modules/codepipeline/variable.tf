@@ -3,7 +3,7 @@ variable "prefix" {
   default     = ""
 }
 
-variable "codebuild_info" {
+variable "codepipeline_info" {
   default = {}
 }
 
@@ -19,4 +19,10 @@ variable "codepipeline_bucket_id" {
   default = ""
 }
 
+variable "codestar_connections_arn" {
+  default = ""
+}
 
+variable "approval_group_name" {
+  default = ""
+}

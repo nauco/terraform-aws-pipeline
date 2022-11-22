@@ -5,17 +5,17 @@ variable "project" {
 
 variable "env" {
   description = "env"
-  default     = "test"
+  default     = ""
 }
 
 variable "prefix" {
   description = "prefix"
-  default     = "Test-"
+  default     = ""
 }
 
 variable "codepipeline_bucket_name" {
   description = "s3 bucket name for codepipeline artifact"
-  default     = "test-codepipeline-artifact"
+  default     = ""
 }
 
 variable "codestar_connections_arn" {

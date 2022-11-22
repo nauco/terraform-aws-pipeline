@@ -1,7 +1,8 @@
 project = "cloudplex"
 env = "dev"
 prefix = "MzcDevCpp-"
-approval_group_name = ""
+
+# 나중엔 삭제하고 Bitbucket.ConnectionArn을 사용하는 방법으로 개발해야함.
 codestar_connections_arn = "arn:aws:codestar-connections:ap-northeast-2:179248873946:connection/a0807f60-eb1c-4f6a-aea6-c9b85977769b"
 aws_codebuild_source_credential_bitbucket_token = "5dRjPC36dpubwrZWMRxB"
 codepipeline_bucket_name = "dev-cpp-codepipeline-artifact"
@@ -88,7 +89,7 @@ pipeline = {
         },
         #approval option
         Approval = {
-            build_approval = false
+            useApprovalStage = false
         }, 
         #codebuild option
         CodeBuild = {
@@ -201,7 +202,7 @@ pipeline = {
     #     },
     #     #approval option
     #     Approval = {
-    #         build_approval = false
+    #         useApprovalStage = false
     #     }, 
     #     #codebuild option
     #     CodeBuild = {
@@ -266,7 +267,7 @@ pipeline = {
     #     },
     #     #approval option
     #     Approval = {
-    #         build_approval = false
+    #         useApprovalStage = false
     #     },         
     #     #codebuild option
     #     CodeBuild = {
@@ -331,7 +332,7 @@ pipeline = {
     #     },
     #     #approval option
     #     Approval = {
-    #         build_approval = false
+    #         useApprovalStage = false
     #     },         
     #     #codebuild option
     #     CodeBuild = {
