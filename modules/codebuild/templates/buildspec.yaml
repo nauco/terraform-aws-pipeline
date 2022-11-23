@@ -8,4 +8,9 @@ phases:
   build:
     commands:
       - echo TEST...
-      - echo SUCCESS...
+      - echo SUCCESS... >> build-artifact.txt
+
+artifacts:
+  files:
+    - build-artifact.txt
+  name: build_output

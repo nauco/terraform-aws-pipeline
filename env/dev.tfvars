@@ -74,7 +74,7 @@ pipeline = {
             }
 
             Approval = {
-                useApprovalStage = true
+                useApprovalStage = false
                 approval_group_name = ""                
             }
 
@@ -106,7 +106,7 @@ pipeline = {
                 S3 = {
                     BucketName = "dev-cpp-codepipeline-artifact"
                     Extract    = "false"
-                    ObjectKey  = "deploy-test"
+                    ObjectKey  = "deploy-file"
                 }
 
                 CodeDeploy = {
