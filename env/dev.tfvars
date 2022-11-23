@@ -1,40 +1,37 @@
-project = "cloudplex"
-env = "dev"
-prefix = "Test-"
+project = "mzc-swat"
+env     = "test"
+region  = "ap-northeast-2"
 
 # 나중엔 삭제하고 Bitbucket.ConnectionArn을 사용하는 방법으로 개발해야함.
 codestar_connections_arn = "arn:aws:codestar-connections:ap-northeast-2:179248873946:connection/a0807f60-eb1c-4f6a-aea6-c9b85977769b"
 aws_codebuild_source_credential_bitbucket_token = "5dRjPC36dpubwrZWMRxB"
 codepipeline_bucket_name = "dev-cpp-codepipeline-artifact"
 
-common_tags = {
+default_tags = {
   dept      = "PSA Group / DevOps SWAT Team"
   i_service = "CloudPlex"
-  env       = "test"
   email     = "lhdong@mz.co.kr"
   purpose   = "Pipeline"
-  managed   = "Terraform"
 }
 
 pipeline = {
     MzcTest1 = {
-        #codepipeline option
+        # codepipeline module
         CodePipeline = {
-            PipelineName = "mzc-test",
-
-            #암호화 키 (미구현)
+            # 암호화 키 (미구현)
 
             Source = {
-                Category = "Source"
-                #AWS, Custom, ThirdParty
-                Owner = "AWS"
                 ActionName = "Source"
+                Category = "Source"
+                # AWS, Custom, ThirdParty
+                Owner = "AWS"
                 # Provider = "Bitbucket", "S3", "ECR", "CodeCommit"
                 Provider = "Bitbucket"
-                Version = "1"
                 OutputArtifact = ["source_output"]
+                Version = "1"
 
-                #AWS CodeCommit
+                # Source Provider Configuration
+                # AWS CodeCommit
                 CodeCommit = {
                     Provider = "CodeCommit"
                     RepositoryName = ""
@@ -43,7 +40,7 @@ pipeline = {
                     OutputArtifactFormat = ""
                 }
 
-                #Amazon ECR
+                # Amazon ECR
                 ECR = {
                     Provider = "ECR"
                     RepositoryName = ""
@@ -51,16 +48,15 @@ pipeline = {
                     ImageTag = ""
                 }
 
-                #Amazon S3
+                # Amazon S3
                 S3 = {
                     Provider = "S3"
                     BucketName = ""
                     #처음에 / 넣지말고, 확장자 포함
                     S3ObjectKey = ""
-
                 }
 
-                #Bitbucket
+                # Bitbucket
                 Bitbucket = {
                     Provider = "CodeStarSourceConnection"
                     ConnectionArn = "arn:aws:codestar-connections:ap-northeast-2:179248873946:connection/a0807f60-eb1c-4f6a-aea6-c9b85977769b"
@@ -69,12 +65,17 @@ pipeline = {
                     BranchName = "main"
                 }
 
-                #Github Enterprise Server
+                # Github Enterprise Server
 
-                #GitHub(버전 1)
+                # GitHub(버전 1)
 
-                #GitHub(버전 2)
+                # GitHub(버전 2)
                 
+            }
+
+            Approval = {
+                useApprovalStage = true
+                approval_group_name = ""                
             }
 
             Build = {
@@ -83,18 +84,17 @@ pipeline = {
 
             Deploy = {
                 useDeployStage = true
-                stageName = "Deploy"
-
-                Category = "Deploy"
-                #AWS, Custom, ThirdParty
-                Owner = "AWS"
+                
                 ActionName = "Deploy"
+                Category = "Deploy"
+                # AWS, Custom, ThirdParty
+                Owner = "AWS"
                 # Provider = S3, CloudFormation, CodeDeploy, CodeDeployToECS
                 Provider = "S3"
+                InputArtifacts = ["build_output"]    
                 Version = "1"
-                InputArtifacts = ["build_output"]                
-                
-
+                            
+                # Deploy Provider Configuration
                 CloudFormation = {
                     ActionMode     = "REPLACE_ON_FAILURE"
                     Capabilities   = "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
@@ -105,43 +105,34 @@ pipeline = {
 
                 S3 = {
                     BucketName = "dev-cpp-codepipeline-artifact"
-                    Extract    = "true"
+                    Extract    = "false"
                     ObjectKey  = "deploy-test"
                 }
 
                 CodeDeploy = {
-                    ApplicationName = "my-application"
+                    ApplicationName     = "my-application"
                     DeploymentGroupName = "my-deployment-group"
                 }
 
                 CodeDeployToECS = {
-                    AppSpecTemplateArtifact = "SourceArtifact"
-                    ApplicationName         = "ecs-cd-application"
-                    DeploymentGroupName = "ecs-deployment-group"
-                    Image1ArtifactName = "MyImage"
-                    Image1ContainerName = "IMAGE1_NAME"
-                    TaskDefinitionTemplatePath = "taskdef.json"
-                    AppSpecTemplatePath = "appspec.yaml"
+                    AppSpecTemplateArtifact        = "SourceArtifact"
+                    ApplicationName                = "ecs-cd-application"
+                    DeploymentGroupName            = "ecs-deployment-group"
+                    Image1ArtifactName             = "MyImage"
+                    Image1ContainerName            = "IMAGE1_NAME"
+                    TaskDefinitionTemplatePath     = "taskdef.json"
+                    AppSpecTemplatePath            = "appspec.yaml"
                     TaskDefinitionTemplateArtifact = "SourceArtifact"
                 }
             }
 
-
-
-            PipelineTags = {
-                Pipeline = "pipeline tag"
-            }
-
         },
-        #approval option
-        Approval = {
-            useApprovalStage = false
-        }, 
-        #codebuild option
+
+        # codebuild module
         CodeBuild = {
-            CodeBuildName = "mzc_test_codebuild"
-            Description = "test desc"
+            Description  = "test desc"
             BuildTimeout = "60"
+
             artifacts = {
                 type = "CODEPIPELINE"
                 path = "codebuild-artifacts"
@@ -161,8 +152,8 @@ pipeline = {
             }            
 
             environment_variables = {
-                "DOMAIN_NAME"  = { val = "space", type = "PLAINTEXT" },
-                "BITBUCKET_PASSWORD"    = { val = "devops-bitbucket:password", type = "SECRETS_MANAGER" }
+                "DOMAIN_NAME" = { val = "space", type = "PLAINTEXT" },
+                "BITBUCKET_PASSWORD" = { val = "devops-bitbucket:password", type = "SECRETS_MANAGER" }
             }
 
             secondary_sources = {
@@ -176,18 +167,12 @@ pipeline = {
                 source_identifier = "root"
                 source_version = "main"
             }
-
-            CodeBuildTags = {
-                CodeBuild = "build tag"                
-            }
             
             # True if buildspec is located in source repo 
             useBuildspecPath = false
             buildspec_path = "apps/buildspec-dev.yml"
             buildspec_yaml = "templates/buildspec.yaml"
-        },
-
-        
+        }
     },
 
 

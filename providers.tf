@@ -3,8 +3,16 @@
 ############################################
 provider "aws" {
   region  = "ap-northeast-2"
+}
 
-  default_tags {
-    tags = var.common_tags
-  }
+############################################
+# Common Tag Setting
+############################################
+locals {
+  common_tags = merge(var.default_tags,{
+    "project" = var.project
+    "region"  = var.region
+    "env"     = var.env
+    "managed" = "terraform"
+  })
 }
