@@ -64,29 +64,26 @@ resource "aws_codepipeline" "codepipeline" {
     }
   }
 
-  # dynamic "stage" {
-  #   for_each = each.value.CodeDeploy.useDeployStage ? [1] : []
+  dynamic "stage" {
+    for_each = var.codepipeline_info.Deploy.useDeployStage ? [var.codepipeline_info.Deploy] : []
          
 
-  #   content {
-  #     name            = each.value.CodeDeploy.stageName
+    content {
+      name            = var.codepipeline_info.Deploy.stageName
 
+      action {
+        name            = var.codepipeline_info.Deploy.stageName
+        category        = var.codepipeline_info.Deploy.Category
+        owner           = var.codepipeline_info.Deploy.Owner
+        provider        = var.codepipeline_info.Deploy.Provider
+        input_artifacts = var.codepipeline_info.Deploy.InputArtifacts
+        version         = var.codepipeline_info.Deploy.Version
 
-  #     action {
-  #       name            = each.value.CodeDeploy.stageName
-  #       category        = each.value.CodeDeploy.Deploy.Category
-  #       owner           = each.value.CodeDeploy.Deploy.Owner
-  #       provider        = each.value.CodeDeploy.Deploy.Provider
-  #       input_artifacts = each.value.CodeDeploy.Deploy.InputArtifacts
-  #       version         = each.value.CodeDeploy.Deploy.Version
-
-  #       configuration = tomap(each.value.CodeDeploy.CloudFormation)
-      
-
-  #     }
-      
-  #   }    
-  # }
+        configuration = tomap(var.codepipeline_info.Deploy[var.codepipeline_info.Deploy.Provider])
+    
+      }  
+    }    
+  }
 
   tags = var.codepipeline_info.PipelineTags
 

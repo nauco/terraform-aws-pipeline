@@ -17,6 +17,8 @@ module "codepipeline" {
     OutputArtifacts     = try(each.value.CodePipeline.Build.OutputArtifacts, [])
     ProjectName         = module.codebuild[each.key].aws_codebuild_project_id
     PipelineTags        = try(each.value.CodePipeline.PipelineTags, {})
+
+    Deploy              = try(each.value.CodePipeline.Deploy, { useDeployStage = false })
   
   }
 }

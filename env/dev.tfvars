@@ -1,6 +1,6 @@
 project = "cloudplex"
 env = "dev"
-prefix = "MzcDevCpp-"
+prefix = "Test-"
 
 # 나중엔 삭제하고 Bitbucket.ConnectionArn을 사용하는 방법으로 개발해야함.
 codestar_connections_arn = "arn:aws:codestar-connections:ap-northeast-2:179248873946:connection/a0807f60-eb1c-4f6a-aea6-c9b85977769b"
@@ -22,7 +22,6 @@ pipeline = {
         CodePipeline = {
             PipelineName = "mzc-test",
 
-
             #암호화 키 (미구현)
 
             Source = {
@@ -34,6 +33,47 @@ pipeline = {
                 Provider = "Bitbucket"
                 Version = "1"
                 OutputArtifact = ["source_output"]
+
+                #AWS CodeCommit
+                CodeCommit = {
+                    Provider = "CodeCommit"
+                    RepositoryName = ""
+                    BranchName = ""
+                    ChangeDetectionOptions = ""
+                    OutputArtifactFormat = ""
+                }
+
+                #Amazon ECR
+                ECR = {
+                    Provider = "ECR"
+                    RepositoryName = ""
+                    #defaults to latest
+                    ImageTag = ""
+                }
+
+                #Amazon S3
+                S3 = {
+                    Provider = "S3"
+                    BucketName = ""
+                    #처음에 / 넣지말고, 확장자 포함
+                    S3ObjectKey = ""
+
+                }
+
+                #Bitbucket
+                Bitbucket = {
+                    Provider = "CodeStarSourceConnection"
+                    ConnectionArn = "arn:aws:codestar-connections:ap-northeast-2:179248873946:connection/a0807f60-eb1c-4f6a-aea6-c9b85977769b"
+                    # <account>/<repository-name>
+                    FullRepositoryId = "megazone/mzc-space"
+                    BranchName = "main"
+                }
+
+                #Github Enterprise Server
+
+                #GitHub(버전 1)
+
+                #GitHub(버전 2)
                 
             }
 
@@ -41,46 +81,52 @@ pipeline = {
                 OutputArtifacts = ["build_output"]
             }
 
-            #AWS CodeCommit
-            CodeCommit = {
-                Provider = "CodeCommit"
-                RepositoryName = ""
-                BranchName = ""
-                ChangeDetectionOptions = ""
-                OutputArtifactFormat = ""
-            }
+            Deploy = {
+                useDeployStage = true
+                stageName = "Deploy"
 
-            #Amazon ECR
-            ECR = {
-                Provider = "ECR"
-                RepositoryName = ""
-                #defaults to latest
-                ImageTag = ""
-            }
-
-            #Amazon S3
-            S3 = {
+                Category = "Deploy"
+                #AWS, Custom, ThirdParty
+                Owner = "AWS"
+                ActionName = "Deploy"
+                # Provider = S3, CloudFormation, CodeDeploy, CodeDeployToECS
                 Provider = "S3"
-                BucketName = ""
-                #처음에 / 넣지말고, 확장자 포함
-                S3ObjectKey = ""
+                Version = "1"
+                InputArtifacts = ["build_output"]                
+                
 
+                CloudFormation = {
+                    ActionMode     = "REPLACE_ON_FAILURE"
+                    Capabilities   = "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
+                    OutputFileName = "CreateStackOutput.json"
+                    StackName      = "MyStack"
+                    TemplatePath   = "build_output::sam-templated.yaml"
+                }
+
+                S3 = {
+                    BucketName = "dev-cpp-codepipeline-artifact"
+                    Extract    = "true"
+                    ObjectKey  = "deploy-test"
+                }
+
+                CodeDeploy = {
+                    ApplicationName = "my-application"
+                    DeploymentGroupName = "my-deployment-group"
+                }
+
+                CodeDeployToECS = {
+                    AppSpecTemplateArtifact = "SourceArtifact"
+                    ApplicationName         = "ecs-cd-application"
+                    DeploymentGroupName = "ecs-deployment-group"
+                    Image1ArtifactName = "MyImage"
+                    Image1ContainerName = "IMAGE1_NAME"
+                    TaskDefinitionTemplatePath = "taskdef.json"
+                    AppSpecTemplatePath = "appspec.yaml"
+                    TaskDefinitionTemplateArtifact = "SourceArtifact"
+                }
             }
 
-            #Bitbucket
-            Bitbucket = {
-                Provider = "CodeStarSourceConnection"
-                ConnectionArn = "arn:aws:codestar-connections:ap-northeast-2:179248873946:connection/a0807f60-eb1c-4f6a-aea6-c9b85977769b"
-                # <account>/<repository-name>
-                FullRepositoryId = "megazone/mzc-space"
-                BranchName = "main"
-            }
 
-            #Github Enterprise Server
-
-            #GitHub(버전 1)
-
-            #GitHub(버전 2)
 
             PipelineTags = {
                 Pipeline = "pipeline tag"
@@ -141,51 +187,7 @@ pipeline = {
             buildspec_yaml = "templates/buildspec.yaml"
         },
 
-        CodeDeploy = {
-            useDeployStage = true
-            stageName = "Deploy"
-
-            Deploy = {
-                Category = "Deploy"
-                #AWS, Custom, ThirdParty
-                Owner = "AWS"
-                ActionName = "Deploy"
-                # Provider = S3, CloudFormation, CodeDeploy, CodeDeployToECS
-                Provider = "S3"
-                Version = "1"
-                InputArtifacts = ["build_output"]                
-            }
-
-            CloudFormation = {
-                ActionMode     = "REPLACE_ON_FAILURE"
-                Capabilities   = "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
-                OutputFileName = "CreateStackOutput.json"
-                StackName      = "MyStack"
-                TemplatePath   = "build_output::sam-templated.yaml"
-            }
-
-            S3 = {
-                BucketName = "dev-cpp-codepipeline-artifact"
-                Extract    = "true"
-                ObjectKey  = "deploy-test"
-            }
-
-            CodeDeploy = {
-                ApplicationName = "my-application"
-                DeploymentGroupName = "my-deployment-group"
-            }
-
-            CodeDeployToECS = {
-                AppSpecTemplateArtifact = "SourceArtifact"
-                ApplicationName         = "ecs-cd-application"
-                DeploymentGroupName = "ecs-deployment-group"
-                Image1ArtifactName = "MyImage"
-                Image1ContainerName = "IMAGE1_NAME"
-                TaskDefinitionTemplatePath = "taskdef.json"
-                AppSpecTemplatePath = "appspec.yaml"
-                TaskDefinitionTemplateArtifact = "SourceArtifact"
-            }
-        }
+        
     },
 
 
