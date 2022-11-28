@@ -29,8 +29,8 @@ pipeline = {
                 #AWS, Custom, ThirdParty
                 Owner = "AWS"
                 ActionName = "Source"
-                # Provider = "Bitbucket", "S3", "ECR", "CodeCommit"
-                Provider = "Bitbucket"
+                # Provider = "Bitbucket", "S3", "ECR", "CodeCommit", "GitHub", "GithubEnterpriseServer"
+                Provider = "GitHub"
                 Version = "1"
                 OutputArtifact = ["source_output"]
 
@@ -57,7 +57,6 @@ pipeline = {
                     BucketName = ""
                     #처음에 / 넣지말고, 확장자 포함
                     S3ObjectKey = ""
-
                 }
 
                 #Bitbucket
@@ -69,12 +68,21 @@ pipeline = {
                     BranchName = "main"
                 }
 
-                #Github Enterprise Server
+                #GitHub
+                GitHub = {
+                    Provider = "CodeStarSourceConnection"
+                    ConnectionArn = "arn:aws:codestar-connections:ap-northeast-2:179248873946:connection/d6b1d668-6c5b-4122-94b3-f06ebac95a81"
+                    FullRepositoryId = "nauco/devops_ojt"
+                    BranchName = "main"
+                }
 
-                #GitHub(버전 1)
-
-                #GitHub(버전 2)
-                
+                #GithubEnterpriseServer
+                GithubEnterpriseServer = {
+                    Provider = "CodeStarSourceConnection"
+                    ConnectionArn = ""
+                    FullRepositoryId = ""
+                    BranchName = ""
+                }             
             }
 
             Build = {
