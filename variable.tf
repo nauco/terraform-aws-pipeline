@@ -4,12 +4,12 @@ variable "project" {
 }
 
 variable "env" {
-  description = "env"
+  description = "environment: dev, stg, qa, prod "
   default     = ""
 }
 
-variable "prefix" {
-  description = "prefix"
+variable "region" {
+  description = "aws region to build network infrastructure"
   default     = ""
 }
 
@@ -35,7 +35,7 @@ variable "approval_group_name" {
   default = ""
 }
 
-variable "common_tags" {
+variable "default_tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
   default     = {}

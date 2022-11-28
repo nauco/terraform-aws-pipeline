@@ -1,5 +1,10 @@
-variable "prefix" {
-  description = "prefix"
+variable "project" {
+  description = "project code which used to compose the resource name"
+  default     = ""
+}
+
+variable "env" {
+  description = "environment: dev, stg, qa, prod "
   default     = ""
 }
 
@@ -20,9 +25,5 @@ variable "codepipeline_bucket_id" {
 }
 
 variable "codestar_connections_arn" {
-  default = ""
-}
-
-variable "approval_group_name" {
   default = ""
 }

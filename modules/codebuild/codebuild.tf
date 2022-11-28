@@ -1,5 +1,5 @@
 resource "aws_codebuild_project" "codebuild" {
-  name          = var.codebuild_info.name
+  name          = format("%s-%s-build", var.project, var.env)
   description   = var.codebuild_info.description
   build_timeout = var.codebuild_info.build_timeout
   service_role  = aws_iam_role.codebuild_role.arn
@@ -55,7 +55,6 @@ resource "aws_codebuild_project" "codebuild" {
   source {
     type      = "CODEPIPELINE"
     buildspec = var.codebuild_info.useBuildspecPath ? var.codebuild_info.buildspec_path : file("${path.module}/${var.codebuild_info.buildspec_yaml}")
-    #buildspec = var.codebuild_info.useBuildspecPath ? var.codebuild_info.buildspec_path : file("${path.module}/${var.codebuild_info.buildspec_yaml}")
   }
 
   dynamic "secondary_sources" {
@@ -76,7 +75,7 @@ resource "aws_codebuild_project" "codebuild" {
     }
   }
   
-  tags = var.codebuild_info.CodeBuildTags
+  tags = var.codebuild_info.common_tags
 }
 
 output "aws_codebuild_project_id" {

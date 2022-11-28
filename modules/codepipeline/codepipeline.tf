@@ -1,5 +1,5 @@
 resource "aws_codepipeline" "codepipeline" {
-  name     = format("%s%s", var.prefix, var.codepipeline_info.PipelineName)
+  name     = format("%s-%s-pipeline", var.project, var.env)
   role_arn = aws_iam_role.codepipeline_role.arn
 
   artifact_store {
@@ -18,8 +18,8 @@ resource "aws_codepipeline" "codepipeline" {
         category         = action.value.Category
         owner            = action.value.Owner
         provider         = var.codepipeline_info.Source[action.value.Provider].Provider
-        version          = action.value.Version
         output_artifacts = action.value.OutputArtifact
+        version          = action.value.Version
 
         configuration = {
           for k, v in var.codepipeline_info.Source[action.value.Provider]: k => v
@@ -31,7 +31,7 @@ resource "aws_codepipeline" "codepipeline" {
   }  
 
   dynamic "stage" {
-    for_each = var.codepipeline_info.useApprovalStage ? [1] : []
+    for_each = var.codepipeline_info.Approval.useApprovalStage ? [1] : []
 
     content {
       name = "Approval"
@@ -67,12 +67,11 @@ resource "aws_codepipeline" "codepipeline" {
   dynamic "stage" {
     for_each = var.codepipeline_info.Deploy.useDeployStage ? [var.codepipeline_info.Deploy] : []
          
-
     content {
-      name            = var.codepipeline_info.Deploy.stageName
+      name = "Deploy"
 
       action {
-        name            = var.codepipeline_info.Deploy.stageName
+        name            = var.codepipeline_info.Deploy.ActionName
         category        = var.codepipeline_info.Deploy.Category
         owner           = var.codepipeline_info.Deploy.Owner
         provider        = var.codepipeline_info.Deploy.Provider
@@ -85,6 +84,6 @@ resource "aws_codepipeline" "codepipeline" {
     }    
   }
 
-  tags = var.codepipeline_info.PipelineTags
+  tags = var.codepipeline_info.common_tags
 
 }
