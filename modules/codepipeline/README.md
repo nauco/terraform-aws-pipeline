@@ -24,7 +24,6 @@ AWS CodePipeline
 | codestar_connections_arn              | code star connection arn                                                                                                                                                                                  | yes      |
 | aws_codebuild_source_credential_token | bitbucket token                                                                                                                                                                                           | yes      |
 | codepipeline_bucket_name              | codepipeline artifact bucket                                                                                                                                                                              | yes      |
-| ------                                | -------------                                                                                                                                                                                             | ------   | ---------                                                                                        |
 | Source                                | Source stage 정의 </b>[docs](https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-pipeline-structure.html#actions-valid-providers) Source Action category 부분 참고                        | yes      | ActionName </b>Category </b>Owner </b>Provider </b>OutputArtifact </b>Version                    |
 | Approval                              | Approval stage 정의. 선택 사용이 가능하다.                                                                                                                                                                | no       | useApprovalStage </b>approval_group_name                                                         |
 | Approval.useApprovalStage             | Approval stage 사용 여부 설정. 디폴트는 `false`이다.                                                                                                                                                      | no       |
@@ -33,13 +32,12 @@ AWS CodePipeline
 | Build.OutputArtifacts                 | Build OutputArtifacts 정의.                                                                                                                                                                               | yes      |
 | Deploy                                | Deploy stage 정의. 선택 사용이 가능하다. </b>[docs](https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-pipeline-structure.html#actions-valid-providers) Deploy Action category 부분 참고 | no       | useDeployStage </b>ActionName </b>Category </b>Owner </b>Provider </b>InputArtifacts </b>Version |
 | Deploy.useDeployStage                 | Deploy stage 사용 여부 설정. 디폴트는 `false`이다.                                                                                                                                                        | no       |
-| ------                                | -------------                                                                                                                                                                                             | ------   | ---------                                                                                        |
 
 
 
 예제
 
-```json
+```
 CodePipeline = {
   Source = {
       ActionName = "Source"
