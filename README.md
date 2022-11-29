@@ -2,10 +2,10 @@
 AWS CodePipeline을 Terraform으로 관리하기 위한 코드
 
 ## 지원
-Source - (Approval) - Build - (Deploy) 로 구성되어 있다.  
-승인(Approval)과 배포(Deploy) 단계는 선택할 수 있다.   
-소스(Source)는 CodeCommit, Bitbucket, GitHub, GitHub Enterpise Server, S3, ECR을 지원한다.   
-배포(Deploy)는 S3, CloudFormation, CodeDeploy, ECS를 지원한다.  
+- Source - (Approval) - Build - (Deploy) 로 구성되어 있다.  
+- 승인(Approval)과 배포(Deploy) 단계는 선택할 수 있다.   
+- 소스(Source)는 CodeCommit, Bitbucket, GitHub, GitHub Enterpise Server, S3, ECR을 지원한다.   
+- 배포(Deploy)는 S3, CloudFormation, CodeDeploy, ECS를 지원한다.  
 
 ## 구성
 
@@ -19,7 +19,6 @@ terraform Init
 # Apply
 terraform apply -var-file=env/dev.tfvars
 ```
-
 
 
 ## Inputs
