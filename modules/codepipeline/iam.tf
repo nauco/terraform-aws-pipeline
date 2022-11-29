@@ -1,5 +1,5 @@
 resource "aws_iam_role" "codepipeline_role" {
-  name = format("%s-codepipeline-role-%s", var.project, random_string.random.result)
+  name = format("%s-codepipeline-role-%s", var.key, random_string.random.result)
 
   assume_role_policy = <<EOF
 {
@@ -18,7 +18,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "codepipeline_policy" {
-  name = format("%s-codepipeline-policy-%s", var.project, random_string.random.result)
+  name = format("%s-codepipeline-policy-%s", var.key, random_string.random.result)
   
   role = aws_iam_role.codepipeline_role.id
 
@@ -72,7 +72,7 @@ data "aws_iam_group" "approval_group" {
 resource "aws_iam_policy" "approval_policy" {
   count       = var.codepipeline_info.Approval.approval_group_name == "" ? 0 : 1
 
-  name = format("%s-approval-policy-%s", var.project, random_string.random.result)
+  name = format("%s-approval-policy-%s", var.key, random_string.random.result)
   policy      = <<EOF
 {
     "Version": "2012-10-17",
