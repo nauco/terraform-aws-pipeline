@@ -1,5 +1,5 @@
 resource "aws_iam_role" "codebuild_role" {
-  name = format("%s-codebuild-role-%s", var.project, random_string.random.result)
+  name = format("%s-codebuild-role-%s", var.key, random_string.random.result)
 
   assume_role_policy = <<EOF
 {

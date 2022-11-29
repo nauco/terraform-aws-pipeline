@@ -1,5 +1,5 @@
 resource "aws_codebuild_project" "codebuild" {
-  name          = format("%s-%s-build", var.project, var.env)
+  name          = format("%s-%s-%s", var.project, var.env, var.key)
   description   = var.codebuild_info.description
   build_timeout = var.codebuild_info.build_timeout
   service_role  = aws_iam_role.codebuild_role.arn

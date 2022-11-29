@@ -4,6 +4,7 @@ module "codebuild" {
   
   project = var.project
   env     = var.env
+  key     = each.key
   
   codepipeline_bucket_arn = aws_s3_bucket.codepipeline_bucket.arn
   codepipeline_bucket_id  = aws_s3_bucket.codepipeline_bucket.id  

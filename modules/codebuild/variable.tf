@@ -8,6 +8,11 @@ variable "env" {
   default     = ""
 }
 
+variable "key" {
+  description = "for naming rule"
+  default     = ""
+}
+
 variable "codebuild_info" {
   default = {}
 }
