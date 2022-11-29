@@ -24,7 +24,7 @@ terraform apply -var-file=env/dev.tfvars
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0, < 2.0.0 |
+| terraform | >= 1.3.0, < 2.0.0 |
 
 ## Providers
 
@@ -44,8 +44,8 @@ terraform apply -var-file=env/dev.tfvars
 
 | Name | Type |
 |------|------|
-| [aws_s3_bucket.codepipeline_bucket](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/config_map) | resource |
-| [aws_s3_bucket_acl.codepipeline_bucket_acl](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/config_map) | resource |
+| [aws_s3_bucket.codepipeline_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_acl.codepipeline_bucket_acl](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_acl) | resource |
 
 
 ## Inputs
@@ -55,6 +55,7 @@ terraform apply -var-file=env/dev.tfvars
 | region | AWS 리전 정보 (e.g. ap-northeast-2) | `string` | `""` | yes |
 | env | tag 생성을 위한 입력 값 (e.g. dev, stg, ...) | `string` | `""` | yes |
 | codepipeline_bucket_name | codepipeline artifact bucket | `string` | `""` | yes |
+| default_tags | tag | `map(string)` | `{}` | no |
 | provider | source provider `Bitbucket`, `S3`, `ECR`, `CodeCommit`, `GitHub`, `GithubEnterpriseServer` 입력 후 source block 내부 해당 configuration을 세팅합니다. | `string` | `""` | yes |
 
 ---
