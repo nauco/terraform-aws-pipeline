@@ -23,4 +23,11 @@ module "codebuild" {
     secondary_source_version = try(each.value.CodeBuild.secondary_source_version, {})
     common_tags              = try(local.common_tags, {})
   }
+
+  codebuild_source_credential = {
+    auth_type   = each.value.CodeBuild.codebuild_source_credential.auth_type
+    server_type = each.value.CodeBuild.codebuild_source_credential.server_type
+    token       = each.value.CodeBuild.codebuild_source_credential.token
+    user_name   = each.value.CodeBuild.codebuild_source_credential.user_name
+  }
 }

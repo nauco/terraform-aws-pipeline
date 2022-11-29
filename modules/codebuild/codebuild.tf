@@ -78,6 +78,15 @@ resource "aws_codebuild_project" "codebuild" {
   tags = var.codebuild_info.common_tags
 }
 
+resource "aws_codebuild_source_credential" "credential" {
+  count = var.codebuild_source_credential.token == "" ? 0 : 1
+  
+  auth_type   = var.codebuild_source_credential.auth_type
+  server_type = var.codebuild_source_credential.server_type
+  token       = var.codebuild_source_credential.token
+  user_name   = var.codebuild_source_credential.user_name
+}
+
 output "aws_codebuild_project_id" {
   value = aws_codebuild_project.codebuild.id
 }

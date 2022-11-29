@@ -29,4 +29,11 @@ variable "codepipeline_bucket_id" {
   default = ""
 }
 
-
+variable "codebuild_source_credential" {
+  type = object({
+    auth_type = optional(string, "")
+    server_type = optional(string, "")
+    token = optional(string, "")
+    user_name = optional(string, "")
+  })
+}

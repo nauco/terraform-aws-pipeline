@@ -315,6 +315,13 @@ pipeline = {
             Description  = "test desc"
             BuildTimeout = "60"
 
+            codebuild_source_credential = {                
+                auth_type   = "BASIC_AUTH"
+                server_type = "BITBUCKET"
+                token       = "5dRjPC36dpubwrZWMRxB"
+                user_name   = "leehodong"
+            }
+
             artifacts = {
                 type = "CODEPIPELINE"
                 path = "codebuild-artifacts"
