@@ -9,7 +9,7 @@ module "codepipeline" {
   codepipeline_bucket_arn  = aws_s3_bucket.codepipeline_bucket.arn
   codepipeline_bucket_id   = aws_s3_bucket.codepipeline_bucket.id
 
-  codestar_connections_arn = var.codestar_connections_arn
+  codestar_connections_arn = try(each.value.CodePipeline.Source[each.value.CodePipeline.Source.Provider].ConnectionArn, "")
 
   codepipeline_info = {
     Source              = try(each.value.CodePipeline.Source, {})
