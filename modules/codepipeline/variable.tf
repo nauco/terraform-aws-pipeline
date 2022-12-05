@@ -13,8 +13,24 @@ variable "key" {
   default     = ""
 }
 
-variable "codepipeline_info" {
-  default = {}
+variable "stage" {
+  default = []
+}
+
+variable "stagelist" {
+  default = []
+}
+
+variable "approval" {
+  default = []
+}
+
+variable "project_name" {
+  default = []
+}
+
+variable "common_tags" {
+  default = []
 }
 
 variable "codepipeline_bucket_name" {
