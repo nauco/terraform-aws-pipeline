@@ -8,31 +8,28 @@ resource "aws_codepipeline" "codepipeline" {
   }
 
   dynamic "stage" {
-    for_each = var.stage
+    for_each = var.stagelist
 
     content {
-      name = var.stagelist[stage.key].StageName
-
+      name = stage.value.StageName
 
       dynamic "action" {
-        for_each = length(var.stagelist[stage.key]) > 0 ? [var.stagelist[stage.key]] : []
+        for_each = stage.value.Actions
 
         content {
-
-          category = stage.value
-          name = var.stagelist[stage.key].ActionName
-          owner = "AWS"
-          provider = var.stagelist[stage.key].Provider
-          version = var.stagelist[stage.key].Version
-          input_artifacts = stage.value != "Approval" ? var.stagelist[stage.key].InputArtifacts : []
-          output_artifacts = stage.value != "Approval" ? var.stagelist[stage.key].OutputArtifacts : []
+          category = stage.value.Stage
+          name = action.value.ActionName
+          owner = action.value.Owner
+          provider = action.value.Provider
+          version = action.value.Version
+          run_order = action.value.RunOrder
+          input_artifacts = stage.value.Stage != "Approval" ? action.value.InputArtifacts : []
+          output_artifacts = stage.value.Stage != "Approval" ? action.value.OutputArtifacts : []
           
-          configuration = stage.value == "Build" ? { ProjectName = var.project_name} : (stage.value != "Approval" ? tomap(var.stagelist[stage.key].Configuration):{})
+          configuration = stage.value.Stage == "Build" ? { ProjectName = var.project_name} : action.value.Configuration
         }
       }
     }
   }
-
   tags = var.common_tags
-
 }
