@@ -8,25 +8,25 @@ resource "aws_codepipeline" "codepipeline" {
   }
 
   dynamic "stage" {
-    for_each = var.stage
+    for_each = var.stagelist
 
     content {
-      name = var.stagelist[stage.key].StageName
+      name = stage.value.StageName
 
       dynamic "action" {
-        for_each = length(var.stagelist[stage.key].ActionNames) > 0 ? var.stagelist[stage.key].ActionNames : []
+        for_each = stage.value.Actions
 
         content {
-          category = stage.value
-          name = action.value
-          owner = "AWS"
-          provider = var.stagelist[stage.key].Providers[action.key]
-          version = var.stagelist[stage.key].Version
-          run_order = var.stagelist[stage.key].RunOrders[action.key]
-          input_artifacts = stage.value != "Approval" ? var.stagelist[stage.key].InputArtifacts[action.key] : []
-          output_artifacts = stage.value != "Approval" ? var.stagelist[stage.key].OutputArtifacts[action.key] : []
+          category = stage.value.Stage
+          name = action.value.ActionName
+          owner = action.value.Owner
+          provider = action.value.Provider
+          version = action.value.Version
+          run_order = action.value.RunOrder
+          input_artifacts = stage.value.Stage != "Approval" ? action.value.InputArtifacts : []
+          output_artifacts = stage.value.Stage != "Approval" ? action.value.OutputArtifacts : []
           
-          configuration = stage.value == "Build" ? { ProjectName = var.project_name} : var.stagelist[stage.key].Configurations[action.key]
+          configuration = stage.value.Stage == "Build" ? { ProjectName = var.project_name} : action.value.Configuration
         }
       }
     }

@@ -13,100 +13,172 @@ default_tags = {
 
 pipeline = {
     MzcTest1 = {
-        # codepipeline module
-        CodePipeline = {
-
-            Stage = ["Source", "Approval", "Build", "Deploy"]
-            //Stage = ["Source", "Approval", "Build"]
-            
-
             StageList = [
                 {
+                    Stage = "Source"
                     StageName = "ABC"
-                    ActionNames = ["S1", "S2", "S3", "S4"]
-                    RunOrders = [1, 1, 2, 2]
-                    Providers = ["CodeStarSourceConnection", "ECR", "S3", "CodeCommit"]
-                    InputArtifacts = [[], [], [], []]
-                    OutputArtifacts = [["source_output1"], ["source_output2"], ["source_output3"], ["source_output4"]]
-                    Version = "1"
-
-                    Configurations = [{
-                        ConnectionArn = "arn:aws:codestar-connections:ap-northeast-2:179248873946:connection/a0807f60-eb1c-4f6a-aea6-c9b85977769b"
-                        # <account>/<repository-name>
-                        FullRepositoryId = "megazone/mzc-space"
-                        BranchName = "main"
-                        DetectChanges = "true"                    
+                    Actions = [{
+                        ActionName = "S1"
+                        Owner = "AWS"
+                        RunOrder = 1
+                        Provider = "CodeStarSourceConnection"
+                        InputArtifacts = []
+                        OutputArtifacts = ["source_output1"]
+                        Version = "1"
+                        Configuration = {
+                            ConnectionArn = "arn:aws:codestar-connections:ap-northeast-2:179248873946:connection/a0807f60-eb1c-4f6a-aea6-c9b85977769b"
+                            # <account>/<repository-name>
+                            FullRepositoryId = "megazone/mzc-space"
+                            BranchName = "main"
+                            DetectChanges = "true"
+                        }
                     }, 
                     {
-                        RepositoryName = "sample-sqs-consumer"
-                        #defaults to latest
-                        ImageTag = "latest"
+                        ActionName = "S2"
+                        Owner = "AWS"
+                        RunOrder = 1
+                        Provider = "ECR"
+                        InputArtifacts = []
+                        OutputArtifacts = ["source_output2"]
+                        Version = "1"
+                        Configuration = {
+                            RepositoryName = "sample-sqs-consumer"
+                            #defaults to latest
+                            ImageTag = "latest"
+                        }
+
                     },
                     {
-                        S3Bucket = "dev-cpp-codepipeline-artifact"
-                        #처음에 / 넣지말고, 확장자 포함
-                        S3ObjectKey = "dev/test"
-                    },
+                        ActionName = "S3"
+                        Owner = "AWS"
+                        RunOrder = 2
+                        Provider = "S3"
+                        InputArtifacts = []
+                        OutputArtifacts = ["source_output3"]
+                        Version = "1"
+                        Configuration =  {
+                            S3Bucket = "dev-cpp-codepipeline-artifact"
+                            #처음에 / 넣지말고, 확장자 포함
+                            S3ObjectKey = "dev/test"
+                        }   
+                    }, 
                     {
-                        RepositoryName = "mz.cloudplex.guide"
-                        BranchName = "main"
-                        PollForSourceChanges = "true"
-                        OutputArtifactFormat = "CODE_ZIP"
+                        ActionName = "S4"
+                        Owner = "AWS"
+                        RunOrder = 2
+                        Provider = "CodeCommit"
+                        InputArtifacts = []
+                        OutputArtifacts = ["source_output4"]
+                        Version = "1"
+                        Configuration =  {
+                            RepositoryName = "mz.cloudplex.guide"
+                            BranchName = "main"
+                            PollForSourceChanges = "true"
+                            OutputArtifactFormat = "CODE_ZIP"
+                        }   
                     }]
                 },
                 {
+                    Stage = "Approval"
                     StageName = "APPROVE"
-                    ActionNames = ["YYY"]
-                    Providers = ["Manual"]
-                    RunOrders = [1]
-                    Version = "1"
-                    Configurations = [{}]
+                    Actions = [{
+                        ActionName = "AAA"
+                        Owner = "AWS"
+                        RunOrder = 1
+                        Provider = "Manual"
+                        InputArtifacts = []
+                        OutputArtifacts = [""]
+                        Version = "1"
+                        Configuration =  {}   
+                    }]
                 },
                 {
+                    Stage = "Build"
                     StageName = "BBBB"
-                    ActionNames = ["B1", "B2"]
-                    Providers = ["CodeBuild", "CodeBuild"]
-                    RunOrders = [1, 2]
-                    Version = "1"
-                    InputArtifacts = [["source_output1", "source_output2"], ["source_output3"]]
-                    OutputArtifacts = [["build_output1"], ["build_output2"]]
+                    Actions = [{
+                        ActionName = "B1"
+                        Owner = "AWS"
+                        RunOrder = 1
+                        Provider = "CodeBuild"
+                        InputArtifacts = ["source_output1", "source_output2"]
+                        OutputArtifacts = ["build_output1"]
+                        Version = "1"
+                    },
+                    {
+                        ActionName = "B2"
+                        Owner = "AWS"
+                        RunOrder = 2
+                        Provider = "CodeBuild"
+                        InputArtifacts = ["source_output3"]
+                        OutputArtifacts = ["build_output2"]
+                        Version = "1"
+                    }]
                 },
                 {
-                    StageName = "BBB"
-                    ActionNames = ["D1", "D2", "D3", "D4"]
-                    Providers = ["CodeDeploy", "CloudFormation", "S3", "CodeDeployToECS"]
-                    Version = "1"
-                    RunOrders = [1, 1, 2, 2]
-                    InputArtifacts = [["build_output1"], ["build_output1"], ["build_output2"], ["build_output2"]]
-                    OutputArtifacts = [[], [], [], []]
-                    
-                    Configurations = [{
-                        ApplicationName     = "my-application"
-                        DeploymentGroupName = "my-deployment-group"
+                    Stage = "Deploy"
+                    StageName = "DDD"
+                    Actions = [{
+                        ActionName = "D1"
+                        Owner = "AWS"
+                        RunOrder = 1
+                        Provider = "CodeDeploy"
+                        InputArtifacts = ["build_output1"]
+                        OutputArtifacts = []
+                        Version = "1"
+                        Configuration = {
+                            ApplicationName     = "my-application"
+                            DeploymentGroupName = "my-deployment-group"
+                        }
                     },
                     {
-                        ActionMode     = "REPLACE_ON_FAILURE"
-                        Capabilities   = "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
-                        OutputFileName = "CreateStackOutput.json"
-                        StackName      = "MyStack"
-                        TemplatePath   = "build_output::sam-templated.yaml"
+                        ActionName = "D2"
+                        Owner = "AWS"
+                        RunOrder = 1
+                        Provider = "CloudFormation"
+                        InputArtifacts = ["build_output1"]
+                        OutputArtifacts = []
+                        Version = "1"
+                        Configuration = {
+                            ActionMode     = "REPLACE_ON_FAILURE"
+                            Capabilities   = "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
+                            OutputFileName = "CreateStackOutput.json"
+                            StackName      = "MyStack"
+                            TemplatePath   = "build_output::sam-templated.yaml"
+                        }
                     },
                     {
-                        BucketName = "dev-cpp-codepipeline-artifact"
-                        Extract    = "false"
-                        ObjectKey  = "deploy-file"
+                        ActionName = "D3"
+                        Owner = "AWS"
+                        RunOrder = 2
+                        Provider = "S3"
+                        InputArtifacts = ["build_output2"]
+                        OutputArtifacts = []
+                        Version = "1"
+                        Configuration = {
+                            BucketName = "dev-cpp-codepipeline-artifact"
+                            Extract    = "false"
+                            ObjectKey  = "deploy-file"
+                        }
                     },
                     {
-                        AppSpecTemplateArtifact        = "SourceArtifact"
-                        ApplicationName                = "ecs-cd-application"
-                        DeploymentGroupName            = "ecs-deployment-group"
-                        Image1ArtifactName             = "MyImage"
-                        Image1ContainerName            = "IMAGE1_NAME"
-                        TaskDefinitionTemplatePath     = "taskdef.json"
-                        AppSpecTemplatePath            = "appspec.yaml"
-                        TaskDefinitionTemplateArtifact = "SourceArtifact"
-                    }
-                    ]
+                        ActionName = "D4"
+                        Owner = "AWS"
+                        RunOrder = 2
+                        Provider = "CodeDeployToECS"
+                        InputArtifacts = ["build_output1", "build_output2"]
+                        OutputArtifacts = []
+                        Version = "1"
+                        Configuration = {
+                            AppSpecTemplateArtifact        = "SourceArtifact"
+                            ApplicationName                = "ecs-cd-application"
+                            DeploymentGroupName            = "ecs-deployment-group"
+                            Image1ArtifactName             = "MyImage"
+                            Image1ContainerName            = "IMAGE1_NAME"
+                            TaskDefinitionTemplatePath     = "taskdef.json"
+                            AppSpecTemplatePath            = "appspec.yaml"
+                            TaskDefinitionTemplateArtifact = "SourceArtifact"
+                        }
+                    }]
                 }
             ]
 
@@ -114,10 +186,8 @@ pipeline = {
                 useApprovalStage = false
                 approval_group_name = ""                
             }
-        },
 
-        # codebuild module
-        CodeBuild = {
+            CodeBuild = {
             Description  = "test desc"
             BuildTimeout = "60"
 
@@ -168,5 +238,5 @@ pipeline = {
             buildspec_path = "apps/buildspec-dev.yml"
             buildspec_yaml = "templates/buildspec.yaml"
         }
-    }
+    },
 }
