@@ -183,12 +183,7 @@ pipeline = {
                 }]
             }
         ]
-
-        Approval = {
-            useApprovalStage = false
-            approval_group_name = ""                
-        }
-
+        
         CodeBuild = {
             Description  = "test desc"
             BuildTimeout = "60"

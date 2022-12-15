@@ -12,7 +12,6 @@ module "codepipeline" {
   codestar_connections_arn = try(each.value.StageList[0].Configuration.ConnectionArn, "*")
   
   stagelist                = each.value.StageList
-  approval                 = try(each.value.Approval, { useApprovalStage = false })
   project_name             = module.codebuild[each.key].aws_codebuild_project_id
   common_tags              = try(local.common_tags, {})
   

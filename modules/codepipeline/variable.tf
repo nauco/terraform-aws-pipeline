@@ -66,10 +66,6 @@ variable "stagelist" {
   }))
 }
 
-variable "approval" {
-  default = []
-}
-
 variable "project_name" {
   default = []
 }
