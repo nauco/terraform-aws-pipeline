@@ -56,7 +56,6 @@ terraform apply -var-file=env/dev.tfvars
 | env | tag 생성을 위한 입력 값 (e.g. dev, stg, ...) | `string` | `""` | yes |
 | codepipeline_bucket_name | codepipeline artifact bucket | `string` | `""` | yes |
 | default_tags | tag | `map(string)` | `{}` | no |
-| provider | source provider `Bitbucket`, `S3`, `ECR`, `CodeCommit`, `GitHub`, `GithubEnterpriseServer` 입력 후 source block 내부 해당 configuration을 세팅합니다. | `string` | `""` | yes |
 
 ---
 [링크](https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference.html)
