@@ -1,11 +1,6 @@
 # CodePipeline
 AWS CodePipeline을 Terraform으로 관리하기 위한 코드
 
-## 지원
-- Source - (Approval) - Build - (Deploy) 로 구성되어 있다.  
-- 승인(Approval)과 배포(Deploy) 단계는 선택할 수 있다.   
-- 소스(Source)는 CodeCommit, Bitbucket, GitHub, GitHub Enterpise Server, S3, ECR을 지원한다.   
-- 배포(Deploy)는 S3, CloudFormation, CodeDeploy, ECS를 지원한다.  
 
 ## 구성
 
@@ -14,7 +9,7 @@ AWS CodePipeline을 Terraform으로 관리하기 위한 코드
 ## 설치
 ```
 # Init
-terraform Init 
+terraform init 
 
 # Apply
 terraform apply -var-file=env/dev.tfvars
@@ -56,7 +51,6 @@ terraform apply -var-file=env/dev.tfvars
 | env | tag 생성을 위한 입력 값 (e.g. dev, stg, ...) | `string` | `""` | yes |
 | codepipeline_bucket_name | codepipeline artifact bucket | `string` | `""` | yes |
 | default_tags | tag | `map(string)` | `{}` | no |
-| provider | source provider `Bitbucket`, `S3`, `ECR`, `CodeCommit`, `GitHub`, `GithubEnterpriseServer` 입력 후 source block 내부 해당 configuration을 세팅합니다. | `string` | `""` | yes |
 
 ---
 [링크](https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference.html)
