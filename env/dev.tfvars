@@ -26,7 +26,7 @@ pipeline = {
                     OutputArtifacts = ["source_output1"]
                     Version = "1"
                     Configuration = {
-                        ConnectionArn = "arn:aws:codestar-connections:ap-northeast-2:179248873946:connection/a0807f60-eb1c-4f6a-aea6-c9b85977769b"
+                        ConnectionArn = ""
                         # <account>/<repository-name>
                         FullRepositoryId = "megazone/mzc-space"
                         BranchName = "main"
@@ -191,7 +191,7 @@ pipeline = {
             codebuild_source_credential = {                
                 auth_type   = "BASIC_AUTH"
                 server_type = "BITBUCKET"
-                token       = "5dRjPC36dpubwrZWMRxB"
+                token       = ""
                 user_name   = "leehodong"
             }
 
