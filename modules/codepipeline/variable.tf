@@ -21,10 +21,6 @@ variable "codepipeline_bucket_arn" {
   default = ""
 }
 
-variable "codepipeline_bucket_id" {
-  default = ""
-}
-
 variable "codestar_connections_arn" {
   default = ""
 }

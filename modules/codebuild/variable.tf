@@ -17,10 +17,6 @@ variable "codebuild_info" {
   default = {}
 }
 
-variable "codepipeline_bucket_name" {
-  default = ""
-}
-
 variable "codepipeline_bucket_arn" {
   default = ""
 }
